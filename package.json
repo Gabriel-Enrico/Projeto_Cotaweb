@@ -1,0 +1,22 @@
+{
+  "name": "cotaweb",
+  "version": "1.0.0",
+  "description": "CotaWeb — Monorepo (Frontend React + Backend Fastify)",
+  "private": true,
+  "workspaces": [
+    "apps/frontend",
+    "apps/backend"
+  ],
+  "scripts": {
+    "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"blue,green\" \"npm run dev --workspace=apps/backend\" \"npm run dev --workspace=apps/frontend\"",
+    "dev:backend": "npm run dev --workspace=apps/backend",
+    "dev:frontend": "npm run dev --workspace=apps/frontend",
+    "build": "npm run build --workspace=apps/frontend && npm run build --workspace=apps/backend",
+    "install:all": "npm install",
+    "migrate": "npm run migrate --workspace=apps/backend",
+    "seed": "npm run seed --workspace=apps/backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "cotaweb",
+  "version": "1.0.0",
+  "description": "CotaWeb API — Fastify + Knex + PostgreSQL",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "migrate": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts migrate:latest",
+    "migrate:rollback": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts migrate:rollback",
+    "migrate:make": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts migrate:make",
+    "seed": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts seed:run"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@fastify/multipart": "^8.3.0",
+    "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
+    "fastify": "^5.8.4",
+    "knex": "^3.1.0",
+    "pg": "^8.13.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.4"
+  }
+}

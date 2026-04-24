@@ -1,0 +1,23 @@
+# Dependências
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+.vscode/
+*.swp
+
+# Vite
+.vite/
