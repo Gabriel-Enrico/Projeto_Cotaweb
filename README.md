@@ -46,17 +46,17 @@ Copie o exemplo e ajuste os valores:
 cp apps/backend/.env.example apps/backend/.env
 ```
 
-Valores padrão para desenvolvimento local:
+Valores padrão (trocar para testar):
 
 ```env
-PORT=3000
-NODE_ENV=development
+PORT=CHANGE-ME
+NODE_ENV=CHANGE-ME
 
-DB_HOST=localhost
-DB_PORT=5433
-DB_NAME=cotaweb
-DB_USER=postgres
-DB_PASSWORD=senha
+DB_HOST=CHANGE-ME
+DB_PORT=CHANGE-ME
+DB_NAME=CHANGE-ME
+DB_USER=CHANGE-ME
+DB_PASSWORD=CHANGE-ME
 ```
 
 ---
