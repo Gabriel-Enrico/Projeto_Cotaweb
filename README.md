@@ -6,10 +6,10 @@ Monorepo do sistema **CotaWeb** — frontend React (Vite) + backend Fastify (Kne
 
 ## Pré-requisitos
 
-| Ferramenta | Versão mínima |
-|------------|---------------|
-| **Node.js** | 18+ |
-| **npm** | 9+ (vem junto com o Node) |
+| Ferramenta                      | Versão mínima                             |
+| ------------------------------- | ----------------------------------------- |
+| **Node.js**                     | 18+                                       |
+| **npm**                         | 9+ (vem junto com o Node)                 |
 | **Docker** e **Docker Compose** | Para subir o banco de dados (recomendado) |
 
 > [!TIP]
@@ -120,14 +120,14 @@ O frontend usa um **proxy** do Vite: qualquer chamada para `/api/*` é redirecio
 
 ## Scripts disponíveis (raiz)
 
-| Script | Descrição |
-|--------|-----------|
-| `npm run dev` | Roda backend + frontend em paralelo |
-| `npm run dev:backend` | Roda só o backend |
-| `npm run dev:frontend` | Roda só o frontend |
-| `npm run build` | Builda frontend + backend para produção |
-| `npm run migrate` | Executa migrations do Knex |
-| `npm run seed` | Executa seeds do Knex |
+| Script                 | Descrição                               |
+| ---------------------- | --------------------------------------- |
+| `npm run dev`          | Roda backend + frontend em paralelo     |
+| `npm run dev:backend`  | Roda só o backend                       |
+| `npm run dev:frontend` | Roda só o frontend                      |
+| `npm run build`        | Builda frontend + backend para produção |
+| `npm run migrate`      | Executa migrations do Knex              |
+| `npm run seed`         | Executa seeds do Knex                   |
 
 ---
 
@@ -178,4 +178,4 @@ npm run seed
 npm run dev
 ```
 
-Pronto! Frontend em `http://localhost:5173` e API em `http://localhost:3000`.
+Pronto! Frontend em `http://localhost:5173` e API em `http://localhost:3000`
