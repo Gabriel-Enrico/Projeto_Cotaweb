@@ -48,3 +48,42 @@ export type UpdateFornecedorInput = z.infer<typeof updateFornecedorSchema>;
 
 export type CreateItemInput = z.infer<typeof createItemSchema>;
 export type UpdateItemInput = z.infer<typeof updateItemSchema>;
+
+export const loginSchema = z.object({
+  email: z
+    .string({ required_error: "E-mail é obrigatório" })
+    .email("E-mail inválido")
+    .max(150)
+    .trim(),
+
+  senha: z
+    .string({ required_error: "Senha é obrigatória" })
+    .min(6, "Senha deve ter pelo menos 6 caracteres")
+    .max(100),
+});
+
+export const registerSchema = z.object({
+  nome: z
+    .string({ required_error: "Nome é obrigatório" })
+    .min(2, "Nome deve ter pelo menos 2 caracteres")
+    .max(100)
+    .trim(),
+
+  email: z
+    .string({ required_error: "E-mail é obrigatório" })
+    .email("E-mail inválido")
+    .max(150)
+    .trim(),
+
+  senha: z
+    .string({ required_error: "Senha é obrigatória" })
+    .min(6, "Senha deve ter pelo menos 6 caracteres")
+    .max(100),
+
+  cnpj: z
+    .string({ required_error: "CNPJ é obrigatório" })
+    .regex(/^\d{14}$/, "CNPJ deve conter 14 números"),
+});
+
+export type LoginInput = z.infer<typeof loginSchema>;
+export type RegisterInput = z.infer<typeof registerSchema>;

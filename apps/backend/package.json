@@ -13,8 +13,11 @@
     "seed": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts seed:run"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.2.0",
+    "@fastify/jwt": "^10.0.0",
     "@fastify/multipart": "^8.3.0",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "exceljs": "^4.4.0",
     "fastify": "^5.8.4",
@@ -23,6 +26,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.0.0",
     "@types/pg": "^8.11.10",
     "tsx": "^4.21.0",

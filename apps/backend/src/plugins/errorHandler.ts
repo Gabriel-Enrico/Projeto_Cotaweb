@@ -1,0 +1,30 @@
+import { FastifyInstance } from "fastify";
+import { ZodError } from "zod";
+import { AppError } from "../db/errors/AppError";
+
+export async function errorHandler(app: FastifyInstance) {
+  app.setErrorHandler((error, request, reply) => {
+
+    if (error instanceof ZodError) {
+      return reply.status(400).send({
+        success: false,
+        error: "Erro de validação",
+        details: error.errors,
+      });
+    }
+
+    if (error instanceof AppError) {
+      return reply.status(error.statusCode).send({
+        success: false,
+        error: error.message,
+      });
+    }
+
+    console.error(error);
+
+    return reply.status(500).send({
+      success: false,
+      error: "Erro interno do servidor",
+    });
+  });
+}
