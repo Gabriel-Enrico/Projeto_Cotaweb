@@ -3,7 +3,6 @@ import './App.css'
 import * as api from './api'
 import Icons from './icons'
 
-const RESTAURANTE_ID = 1
 const NOME_APP = 'COTAWEB'
 const UNIDADES = ['un', 'kg', 'g', 'l', 'ml', 'cx', 'pct', 'fardo', 'sc', 'sacos', 'm']
 
@@ -116,6 +115,9 @@ function ModalImport({ tipo, onImportar, onFechar }) {
 }
 
 export default function App() {
+  const [authState, setAuthState] = useState(null)
+  const [authCarregando, setAuthCarregando] = useState(true)
+  
   const [aba, setAba] = useState('fornecedores')
   const [fornecedoresList, setFornecedoresList] = useState([])
   const [itensList, setItensList] = useState([])
@@ -150,6 +152,46 @@ export default function App() {
   const [iEditId, setIEditId] = useState(null)
   const [erroI, setErroI] = useState({})
 
+  const RESTAURANTE_ID = authState?.usuario?.restaurante_id
+
+  useEffect(() => {
+    async function restaurarSessao() {
+      const token = localStorage.getItem('accessToken')
+      if (!token) { setAuthCarregando(false); return }
+      try {
+        const { usuario } = await api.auth.me()
+        setAuthState({ usuario })
+      } catch {
+        localStorage.removeItem('accessToken')
+      } finally {
+        setAuthCarregando(false)
+      }
+    }
+    restaurarSessao()
+
+    const handler = () => setAuthState(null)
+    window.addEventListener('auth:logout', handler)
+    return () => window.removeEventListener('auth:logout', handler)
+  }, [])
+
+  async function handleLogout() {
+    await api.auth.logout()
+    setAuthState(null)
+  }
+
+  if (authCarregando) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f0f0f' }}>
+        <div style={{ color: '#fff', opacity: 0.5, fontSize: 14 }}>Carregando...</div>
+      </div>
+    )
+  }
+
+  if (!authState) {
+    return <LoginPage onLogin={(data) => setAuthState(data)} />
+  }
+  
+
   const carregarFornecedores = useCallback(async () => {
     try {
       const data = await api.fornecedores.listar(RESTAURANTE_ID)
@@ -157,7 +199,7 @@ export default function App() {
     } catch (err) {
       toast('Erro ao carregar fornecedores: ' + err.message, 'error')
     }
-  }, [toast])
+  }, [toast, RESTAURANTE_ID])
 
   const carregarItens = useCallback(async () => {
     try {
@@ -166,7 +208,7 @@ export default function App() {
     } catch (err) {
       toast('Erro ao carregar itens: ' + err.message, 'error')
     }
-  }, [toast])
+  }, [toast, RESTAURANTE_ID])
 
   const carregarDepartamentos = useCallback(async () => {
     try {
@@ -174,17 +216,18 @@ export default function App() {
       setDepartamentosList(data)
     } catch (err) {
     }
-  }, [])
+  }, [RESTAURANTE_ID])
 
   useEffect(() => {
-    Promise.all([carregarFornecedores(), carregarItens(), carregarDepartamentos()])
-      .finally(() => setLoading(false))
-  }, [carregarFornecedores, carregarItens, carregarDepartamentos])
+  if (!RESTAURANTE_ID) return
 
-  function limparFormFornecedor() {
-    setFNome(''); setFTel(''); setFEmail(''); setFCnpj(''); setFContato('')
-    setFEditId(null); setErroF({})
-  }
+  Promise.all([
+    carregarFornecedores(),
+    carregarItens(),
+    carregarDepartamentos()
+  ]).finally(() => setLoading(false))
+
+}, [RESTAURANTE_ID, carregarFornecedores, carregarItens, carregarDepartamentos])
 
   async function salvarFornecedor() {
     const erros = {}
