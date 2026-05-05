@@ -6,9 +6,10 @@ export async function errorHandler(app: FastifyInstance) {
   app.setErrorHandler((error, request, reply) => {
 
     if (error instanceof ZodError) {
+      const formattedMessage = error.issues.map(i => i.message).join(", ");
       return reply.status(400).send({
         success: false,
-        error: "Erro de validação",
+        message: formattedMessage,
         details: error.errors,
       });
     }
@@ -16,7 +17,7 @@ export async function errorHandler(app: FastifyInstance) {
     if (error instanceof AppError) {
       return reply.status(error.statusCode).send({
         success: false,
-        error: error.message,
+        message: error.message,
       });
     }
 

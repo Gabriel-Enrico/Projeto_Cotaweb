@@ -10,7 +10,8 @@
     "migrate": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts migrate:latest",
     "migrate:rollback": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts migrate:rollback",
     "migrate:make": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts migrate:make",
-    "seed": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts seed:run"
+    "seed": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts seed:run",
+    "seed:make": "../../node_modules/.bin/tsx ../../node_modules/knex/bin/cli.js --knexfile src/db/knexfile.ts seed:make"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",

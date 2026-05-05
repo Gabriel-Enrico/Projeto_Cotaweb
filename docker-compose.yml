@@ -11,6 +11,61 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-senha}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-cotaweb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: cotaweb_backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-cotaweb}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-senha}
+      JWT_SECRET: ${JWT_SECRET:-cotaweb_jwt_secret_dev_2026}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-cotaweb_refresh_secret_dev_2026}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile.migrate
+    container_name: cotaweb_migrate
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-cotaweb}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-senha}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    container_name: cotaweb_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
 volumes:
-  pgdata
+  pgdata:

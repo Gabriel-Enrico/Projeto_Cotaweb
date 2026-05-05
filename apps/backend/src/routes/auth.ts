@@ -45,7 +45,7 @@ export async function authRoutes(app: FastifyInstance) {
         reply.setCookie("refreshToken", refreshToken, {
             httpOnly: true,
             sameSite: "strict",
-            path: "auth/refresh",
+            path: "/auth/refresh",
             maxAge: REFRESH_EXPIRES_MS / 1000,
         });
 

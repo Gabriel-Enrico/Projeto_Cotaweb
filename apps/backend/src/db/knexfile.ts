@@ -41,11 +41,11 @@ const config: Record<string, Knex.Config> = {
     },
     migrations: {
       directory: "./migrations",
-      extension: "ts",
+      extension: "js",
     },
     seeds: {
       directory: "./seeds",
-      extension: "ts",
+      extension: "js",
     },
     pool: {
       min: 2,

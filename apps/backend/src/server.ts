@@ -12,12 +12,15 @@ import { cotacaoRoutes } from "./routes/cotacoes";
 import { exportRoutes } from "./routes/export";
 import { authRoutes } from "./routes/auth";
 import { authMiddleware } from "./utils/authMiddleware";
+import { errorHandler } from "./plugins/errorHandler";
 
 const app = Fastify({ logger: true });
 
 async function bootstrap() {
+  await app.register(errorHandler);
+
   await app.register(cors, {
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

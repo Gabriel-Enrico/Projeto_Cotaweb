@@ -1,0 +1,16 @@
+FROM node:22-alpine
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+COPY apps/backend/package.json ./apps/backend/package.json
+RUN mkdir -p apps/frontend && echo '{"name":"@cotaweb/frontend","version":"0.0.0"}' > apps/frontend/package.json
+
+# Instala com devDependencies (precisa do tsx)
+RUN npm install --workspace=apps/backend --ignore-scripts
+
+# Copia o source completo (precisa dos .ts para o knex comparar)
+COPY apps/backend ./apps/backend
+
+WORKDIR /app/apps/backend
+
+CMD ["../../node_modules/.bin/tsx", "../../node_modules/knex/bin/cli.js", "--knexfile", "src/db/knexfile.ts", "migrate:latest"]

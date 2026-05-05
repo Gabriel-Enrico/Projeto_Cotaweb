@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import db from "../db/connection";
 import { LoginInput, RegisterInput } from "../schemas";
+import { httpError } from "../db/errors/httpError";
 
 export class AuthService {
     async registrar({ nome, email, senha, cnpj }: RegisterInput) {
@@ -9,12 +10,12 @@ export class AuthService {
             .first();
 
         if (!restaurante) {
-            throw new Error("CNPJ não encontrado. Verifique e tente novamente.");
+            throw httpError.notFound("CNPJ não encontrado. Verifique e tente novamente.");
         }
 
         const emailExistente = await db("usuarios").where({ email }).first();
         if (emailExistente) {
-            throw new Error("Email já cadastrado. Tente fazer login ou use outro email.");
+            throw httpError.badRequest("Email já cadastrado. Tente fazer login ou use outro email.");
         }
 
         const senha_hash = await bcrypt.hash(senha, 12);
@@ -37,12 +38,12 @@ export class AuthService {
             .first();
 
         if (!usuario) {
-            throw new Error("Email ou senha incorretos.");
+            throw httpError.badRequest("Email ou senha incorretos.");
         }
 
         const senhaOk = await bcrypt.compare(senha, usuario.senha_hash);
         if (!senhaOk) {
-            throw new Error("Email ou senha incorretos.");
+            throw httpError.badRequest("Email ou senha incorretos.");
         }
 
         return {
@@ -61,7 +62,7 @@ export class AuthService {
             .first();
 
         if (!usuario) {
-            throw new Error("Usuário não encontrado.");
+            throw httpError.notFound("Usuário não encontrado.");
         }
 
         const restaurante = await db("restaurantes")

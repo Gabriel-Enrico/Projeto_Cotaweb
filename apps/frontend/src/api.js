@@ -28,24 +28,25 @@ async function req(endpoint, options = {}, retry = true) {
   }
  
   const data = await res.json().catch(() => ({}))
-  if (!res.ok) throw new Error(data.error || data.message || `Erro ${res.status}`)
+  if (!res.ok) throw new Error(data.message || data.error || `Erro ${res.status}`)
   return data
 }
 
 export const auth = {
   registrar: (body) => 
-    req('auth/registrar', {
+    req('/auth/registrar', {
       method: 'POST',
       body: JSON.stringify(body)
     }),
 
   login: async ({ email, senha }) => {
-    const data = await req('/auth/login', {
+    const res = await req('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, senha })
     })
+    const data = res?.data ?? res
     if (data?.accessToken) {
-      localStorage.setItem("accessToken", data.accessToken)
+      localStorage.setItem('accessToken', data.accessToken)
     }
     return data
   },
@@ -57,9 +58,10 @@ export const auth = {
         credentials: 'include',
       })
       if (!res.ok) return false
-      const data = await res.json()
-      if (data?.accessToken) {
-        localStorage.setItem('accessToken', data.accessToken)
+      const json = await res.json()
+      const accessToken = json?.data?.accessToken ?? json?.accessToken
+      if (accessToken) {
+        localStorage.setItem('accessToken', accessToken)
         return true
       }
       return false
