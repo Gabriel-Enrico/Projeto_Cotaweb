@@ -48,6 +48,44 @@ export async function itemRoutes(app: FastifyInstance) {
     return reply.status(201).send(await svc.criar(body));
   });
 
+  // POST /itens/importar — importação em lote via texto colado
+  const importSchema = z.object({
+    restaurante_id: z.number().int().positive(),
+    itens: z.array(
+      z.object({
+        produto: z.string().min(1).max(100).trim(),
+        unidade: z.string().min(1).max(30).trim().default("un"),
+        quantidade: z.number().min(0).default(0),
+        departamento_id: z.number().int().positive().optional(),
+      })
+    ).min(1, "Nenhum item para importar"),
+  });
+
+  app.post("/itens/importar", async (req, reply) => {
+    const body = validate(importSchema, req.body, reply);
+    if (!body) return;
+
+    let criados = 0;
+    let ignorados = 0;
+
+    for (const item of body.itens) {
+      // Verifica duplicata por nome exato (case-insensitive) no mesmo restaurante
+      const existente = await svc.buscarPorProduto(body.restaurante_id, item.produto);
+      if (existente) {
+        ignorados++;
+        continue;
+      }
+      await svc.criar({ ...item, restaurante_id: body.restaurante_id });
+      criados++;
+    }
+
+    return reply.status(201).send({
+      message: `Importação concluída: ${criados} criado(s), ${ignorados} ignorado(s) (duplicatas).`,
+      criados,
+      ignorados,
+    });
+  });
+
   app.put<{ Params: { id: string } }>("/itens/:id", async (req, reply) => {
     const params = validate(idParam, req.params, reply);
     if (!params) return;

@@ -11,6 +11,7 @@ import { itemRoutes } from "./routes/itens";
 import { cotacaoRoutes } from "./routes/cotacoes";
 import { exportRoutes } from "./routes/export";
 import { authRoutes } from "./routes/auth";
+import { adminRoutes } from "./routes/admin";
 import { authMiddleware } from "./utils/authMiddleware";
 import { errorHandler } from "./plugins/errorHandler";
 
@@ -51,6 +52,7 @@ async function bootstrap() {
     await protectedApp.register(itemRoutes);
     await protectedApp.register(cotacaoRoutes);
     await protectedApp.register(exportRoutes);
+    await protectedApp.register(adminRoutes);
   });
 
   const port = Number(process.env.PORT) || 3000;

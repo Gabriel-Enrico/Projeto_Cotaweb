@@ -121,3 +121,33 @@ export const cotacoes = {
   buscarPorToken: (token) => req(`/responder/${token}`),
   responder: (token, body) => req(`/responder/${token}`, { method: 'POST', body: JSON.stringify(body) }),
 }
+
+export const admin = {
+  stats: () => req('/admin/stats'),
+
+  restaurantes: {
+    listar: (params = {}) => {
+      const qs = new URLSearchParams()
+      if (params.status) qs.set('status', params.status)
+      if (params.busca) qs.set('busca', params.busca)
+      const query = qs.toString() ? `?${qs}` : ''
+      return req(`/admin/restaurantes${query}`)
+    },
+    buscar: (id) => req(`/admin/restaurantes/${id}`),
+    criar: (body) => req('/admin/restaurantes', { method: 'POST', body: JSON.stringify(body) }),
+    atualizar: (id, body) => req(`/admin/restaurantes/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+    deletar: (id) => req(`/admin/restaurantes/${id}`, { method: 'DELETE' }),
+    usuarios: (id) => req(`/admin/restaurantes/${id}/usuarios`),
+  },
+
+  usuarios: {
+    listar: () => req('/admin/usuarios'),
+    criar: (body) => req('/admin/usuarios', { method: 'POST', body: JSON.stringify(body) }),
+    atualizar: (id, body) => req(`/admin/usuarios/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  },
+}
+
+export const importar = {
+  fornecedores: (body) => req('/fornecedores/importar', { method: 'POST', body: JSON.stringify(body) }),
+  itens: (body) => req('/itens/importar', { method: 'POST', body: JSON.stringify(body) }),
+}

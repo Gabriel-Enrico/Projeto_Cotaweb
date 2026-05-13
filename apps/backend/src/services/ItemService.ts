@@ -44,6 +44,13 @@ export class ItemService {
     return item || null;
   }
 
+  async buscarPorProduto(restaurante_id: number, produto: string): Promise<Item | null> {
+    const item = await db("itens")
+      .whereRaw("restaurante_id = ? AND LOWER(produto) = LOWER(?)", [restaurante_id, produto])
+      .first();
+    return item || null;
+  }
+
   async criar(dto: CreateItemDTO): Promise<Item> {
     const [item] = await db("itens").insert(dto).returning("*");
     return item;
