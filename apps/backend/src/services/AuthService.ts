@@ -1,9 +1,37 @@
 import bcrypt from "bcryptjs";
 import db from "../db/connection";
-import { LoginInput } from "../schemas";
+import { LoginInput, RegisterInput } from "../schemas";
 import { httpError } from "../db/errors/httpError";
 
 export class AuthService {
+    async registrar({ nome, email, senha, cnpj }: RegisterInput) {
+        const restaurante = await db('restaurantes')
+            .where({ cnpj })
+            .first();
+
+        if (!restaurante) {
+            throw httpError.notFound("CNPJ não encontrado. Verifique e tente novamente.");
+        }
+
+        const emailExistente = await db("usuarios").where({ email }).first();
+        if (emailExistente) {
+            throw httpError.badRequest("Email já cadastrado. Tente fazer login ou use outro email.");
+        }
+
+        const senha_hash = await bcrypt.hash(senha, 12);
+
+        const [usuario] = await db("usuarios")
+            .insert({
+                nome,
+                email,
+                senha_hash,
+                restaurante_id: restaurante.id,
+            })
+            .returning(["id", "nome", "email", "cargo", "restaurante_id"]);
+
+        return { usuario };
+    }
+
     async login({ email, senha }: LoginInput) {
         const usuario = await db("usuarios")
             .where({ email, ativo: true })

@@ -2,8 +2,9 @@ import { useState } from 'react';
 import Icons from '../icons';
 import { initials, normalizarTel, validarTel } from '../utils/formatters';
 import * as api from '../api';
+import { parseFornecedoresTexto } from '../utils/parsers';
 import { EmptyState } from '../components/common/EmptyState';
-import ImportFornecedoresModal from '../components/import/ImportFornecedoresModal';
+import { ModalImport } from '../components/modals/ModalImport';
 
 export default function FornecedoresPage({ 
   fornecedoresList, 
@@ -82,22 +83,33 @@ export default function FornecedoresPage({
     }
   }
 
-  async function carregarFornecedores() { // added to refresh list
-    try {
-      const data = await api.fornecedores.listar(restauranteId)
-      setFornecedoresList(data)
-    } catch {}
+  async function processarImportacao(texto) {
+    setImportModal(false)
+    if (!texto.trim()) { toast('Cole algum conteúdo antes de importar.', 'warning'); return }
+
+    let importados = 0, erros = 0
+    const parsed = parseFornecedoresTexto(texto)
+    
+    if (!parsed.length) { toast('Nenhuma linha reconhecida.', 'warning'); return }
+    
+    for (const item of parsed) {
+      try {
+        const novo = await api.fornecedores.criar({ ...item, restaurante_id: restauranteId })
+        setFornecedoresList(prev => [...prev, novo])
+        importados++
+      } catch { erros++ }
+    }
+
+    if (importados > 0) toast(`${importados} item(s) importado(s) com sucesso!`, 'success')
+    if (erros > 0) toast(`${erros} linha(s) ignorada(s) por erro.`, 'warning')
   }
 
   return (
     <section>
       {importModal && (
-        <ImportFornecedoresModal
-          restauranteId={restauranteId}
-          onImportado={() => {
-            carregarFornecedores()
-            toast('Importação concluída com sucesso!', 'success')
-          }}
+        <ModalImport
+          tipo="fornecedores"
+          onImportar={processarImportacao}
           onFechar={() => setImportModal(false)}
         />
       )}

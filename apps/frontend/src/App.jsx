@@ -8,8 +8,6 @@ import { ModalConfirm } from './components/modals/ModalConfirm'
 import FornecedoresPage from './pages/FornecedoresPage'
 import ItensPage from './pages/ItensPage'
 import EnviarPage from './pages/EnviarPage'
-import AdminPage from './pages/admin/AdminPage'
-import OnboardingChecklist from './components/onboarding/OnboardingChecklist'
 
 const NOME_APP = 'COTAWEB'
 
@@ -111,12 +109,6 @@ export default function App() {
     return <LoginPage onLogin={(data) => setAuthState(data)} />
   }
 
-  // Superadmin da plataforma CotaWeb: cargo=admin + sem restaurante_id
-  const isSuperAdmin = authState?.usuario?.cargo === 'admin' && !authState?.usuario?.restaurante_id
-  if (isSuperAdmin) {
-    return <AdminPage onLogout={handleLogout} />
-  }
-
   const tabs = [
     { id: 'fornecedores', label: 'Fornecedores', icon: Icons.users, count: fornecedoresList.length },
     { id: 'itens', label: 'Produtos', icon: Icons.cart, count: itensList.length },
@@ -166,18 +158,7 @@ export default function App() {
 
           {loading && <p style={{ textAlign: 'center', color: 'var(--muted)' }}>Carregando...</p>}
 
-          {/* Onboarding: aparece quando não há dados ainda */}
-          {!loading && fornecedoresList.length === 0 && itensList.length === 0 && aba !== 'enviar' && (
-            <OnboardingChecklist
-              fornecedores={fornecedoresList.length}
-              itens={itensList.length}
-              onAbrirFornecedores={() => setAba('fornecedores')}
-              onAbrirItens={() => setAba('itens')}
-              onAbrirEnviar={() => setAba('enviar')}
-            />
-          )}
-
-          {!loading && (fornecedoresList.length > 0 || itensList.length > 0 || aba === 'enviar') && aba === 'fornecedores' && (
+          {!loading && aba === 'fornecedores' && (
             <FornecedoresPage
               fornecedoresList={fornecedoresList}
               setFornecedoresList={setFornecedoresList}
@@ -187,7 +168,7 @@ export default function App() {
             />
           )}
 
-          {!loading && (fornecedoresList.length > 0 || itensList.length > 0 || aba === 'itens') && aba === 'itens' && (
+          {!loading && aba === 'itens' && (
             <ItensPage
               itensList={itensList}
               setItensList={setItensList}

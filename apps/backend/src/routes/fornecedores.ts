@@ -47,45 +47,6 @@ export async function fornecedorRoutes(app: FastifyInstance) {
     return reply.status(201).send(await svc.criar(body));
   });
 
-  // POST /fornecedores/importar — importação em lote via texto colado
-  const importSchema = z.object({
-    restaurante_id: z.number().int().positive(),
-    fornecedores: z.array(
-      z.object({
-        nome: z.string().min(2).max(100).trim(),
-        telefone: z.string().regex(telefoneRegex, "Telefone deve ter 10 ou 11 dígitos"),
-        departamento: z.string().max(100).optional(), // apenas para referência, não é FK aqui
-        email: z.string().email().optional(),
-        contato_nome: z.string().max(100).optional(),
-      })
-    ).min(1, "Nenhum fornecedor para importar"),
-  });
-
-  app.post("/fornecedores/importar", async (req, reply) => {
-    const body = validate(importSchema, req.body, reply);
-    if (!body) return;
-
-    let criados = 0;
-    let ignorados = 0;
-
-    for (const f of body.fornecedores) {
-      // Verifica se já existe fornecedor com mesmo telefone neste restaurante
-      const existente = await svc.buscarPorTelefone(body.restaurante_id, f.telefone);
-      if (existente) {
-        ignorados++;
-        continue;
-      }
-      await svc.criar({ ...f, restaurante_id: body.restaurante_id });
-      criados++;
-    }
-
-    return reply.status(201).send({
-      message: `Importação concluída: ${criados} criado(s), ${ignorados} ignorado(s) (duplicatas).`,
-      criados,
-      ignorados,
-    });
-  });
-
   app.put<{ Params: { id: string } }>("/fornecedores/:id", async (req, reply) => {
     const params = validate(idParam, req.params, reply);
     if (!params) return;

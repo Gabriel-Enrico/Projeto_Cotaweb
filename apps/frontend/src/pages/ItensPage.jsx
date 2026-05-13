@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import Icons from '../icons';
 import * as api from '../api';
+import { parseItensTexto } from '../utils/parsers';
 import { EmptyState } from '../components/common/EmptyState';
-import ImportItensModal from '../components/import/ImportItensModal';
+import { ModalImport } from '../components/modals/ModalImport';
 
 const UNIDADES = ['un', 'kg', 'g', 'l', 'ml', 'cx', 'pct', 'fardo', 'sc', 'sacos', 'm'];
 
@@ -80,23 +81,33 @@ export default function ItensPage({
     }
   }
 
-  async function carregarItens() {
-    try {
-      const data = await api.itens.listar(restauranteId)
-      setItensList(data)
-    } catch {}
+  async function processarImportacao(texto) {
+    setImportModal(false)
+    if (!texto.trim()) { toast('Cole algum conteúdo antes de importar.', 'warning'); return }
+
+    let importados = 0, erros = 0
+    const parsed = parseItensTexto(texto, restauranteId)
+    
+    if (!parsed.length) { toast('Nenhuma linha reconhecida.', 'warning'); return }
+    
+    for (const item of parsed) {
+      try {
+        const novo = await api.itens.criar(item)
+        setItensList(prev => [...prev, novo])
+        importados++
+      } catch { erros++ }
+    }
+
+    if (importados > 0) toast(`${importados} item(s) importado(s) com sucesso!`, 'success')
+    if (erros > 0) toast(`${erros} linha(s) ignorada(s) por erro.`, 'warning')
   }
 
   return (
     <section>
       {importModal && (
-        <ImportItensModal
-          restauranteId={restauranteId}
-          departamentosList={departamentosList}
-          onImportado={() => {
-            carregarItens()
-            toast('Importação concluída com sucesso!', 'success')
-          }}
+        <ModalImport
+          tipo="itens"
+          onImportar={processarImportacao}
           onFechar={() => setImportModal(false)}
         />
       )}
