@@ -43,6 +43,11 @@ export class FornecedorService {
     return f || null;
   }
 
+  async buscarPorTelefone(restaurante_id: number, telefone: string): Promise<Fornecedor | null> {
+    const f = await db("fornecedores").where({ restaurante_id, telefone }).first();
+    return f || null;
+  }
+
   async criar(dto: CreateFornecedorDTO): Promise<Fornecedor> {
     const [fornecedor] = await db("fornecedores").insert(dto).returning("*");
     return fornecedor;

@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { AuthService } from "../services/AuthService";
-import { loginSchema, registerSchema } from "../schemas";
+import { loginSchema } from "../schemas";
 import { authMiddleware } from "../utils/authMiddleware";
 import { response } from "../utils/response";
 import { httpError } from "../db/errors/httpError";
@@ -12,14 +12,6 @@ const ACCESS_EXPIRES = "15m";
 const REFRESH_EXPIRES_MS = 7 * 24 * 60 * 60 * 1000; // 7 dias em milissegundos
 
 export async function authRoutes(app: FastifyInstance) {
-    // POST /auth/registrar
-    app.post("/auth/registrar", async (req, reply) => {
-        const data = registerSchema.parse(req.body);
-
-        const result = await authService.registrar(data);
-
-        return reply.status(201).send(result);
-    })
 
     // POST /auth/login
     app.post("/auth/login", async (req, reply) => {
