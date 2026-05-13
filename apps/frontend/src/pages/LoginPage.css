@@ -1,0 +1,207 @@
+* {
+  box-sizing: border-box;
+}
+
+/* FUNDO */
+.login-overlay {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #EDEAE4, #dcd7cf);
+  padding: 16px;
+}
+
+/* CARD */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 42px 36px;
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  animation: fadeIn 0.4s ease;
+}
+
+.login-card--shake {
+  animation: shake 0.4s;
+}
+
+/* LOGO */
+.login-logo {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.login-logo__text {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.login-logo__text--accent {
+  background: #111827;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+/* TEXTO */
+.login-subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 24px;
+}
+
+/* TABS */
+.login-tabs {
+  display: flex;
+  background: #F3F4F6;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.login-tab {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  color: #6B7280;
+  transition: 0.2s;
+}
+
+.login-tab.active {
+  background: white;
+  color: #111827;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* FORM */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* CAMPOS */
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.login-field input {
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.login-field input:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 4px rgba(17,24,39,0.08);
+  outline: none;
+}
+
+/* ERRO */
+.login-error {
+  background: #FEE2E2;
+  border: 1px solid #FCA5A5;
+  color: #DC2626;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* EXTRA */
+.login-extra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+.login-extra input {
+  margin-right: 4px;
+}
+
+.login-extra a {
+  text-decoration: none;
+  color: #111827;
+  font-weight: 500;
+}
+
+.login-extra a:hover {
+  text-decoration: underline;
+}
+
+/* BOTÃO */
+.login-btn {
+  height: 46px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* SPINNER */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ANIMAÇÕES */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
+}

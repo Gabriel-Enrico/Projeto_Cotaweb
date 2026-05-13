@@ -1,0 +1,151 @@
+.fp-overlay {
+  min-height: 100vh;
+  background:
+    linear-gradient(
+      135deg,
+      #f5f7fa 0%,
+      #eceff3 100%
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.fp-card {
+  width: 100%;
+  max-width: 430px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 42px 36px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #ececec;
+  animation: fadeUp .35s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.login-logo__text {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: #111827;
+}
+
+.login-logo__text--accent {
+  background: #111827;
+  color: #fff;
+  padding: 3px 10px;
+ border-radius: 10px;
+}
+
+.fp-card h2 {
+  text-align: center;
+  font-size: 28px;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.fp-subtitle {
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.fp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fp-form input {
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid #dcdfe4;
+  padding: 0 16px;
+  font-size: 14px;
+  background: #fafafa;
+  transition:
+    border-color .2s,
+    background .2s,
+    box-shadow .2s;
+}
+
+.fp-form input:focus {
+  outline: none;
+  background: #fff;
+  border-color: #111827;
+  box-shadow:
+    0 0 0 4px rgba(17, 24, 39, 0.08);
+}
+
+.fp-form button {
+  height: 52px;
+  border: none;
+  border-radius: 14px;
+  background: #111827;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s,
+    opacity .2s;
+}
+
+.fp-form button:hover {
+  opacity: .94;
+  transform: translateY(-1px);
+}
+
+.fp-form button:active {
+  transform: scale(.98);
+}
+
+.fp-form button:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.login-error {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+}
+
+.fp-back {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color .2s;
+}
+
+.fp-back:hover {
+  color: #111827;
+}

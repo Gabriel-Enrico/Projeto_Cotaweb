@@ -1,0 +1,70 @@
+.fp-overlay {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #EDEAE4, #dcd7cf);
+}
+
+.fp-card {
+  background: rgba(255,255,255,0.9);
+  padding: 36px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+.fp-card h2 {
+  margin-bottom: 10px;
+}
+
+.fp-subtitle {
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 20px;
+}
+
+.fp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fp-form input {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.fp-form input:focus {
+  border-color: #111827;
+  outline: none;
+}
+
+.fp-form button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #111827;
+  color: white;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.fp-success {
+  background: #DCFCE7;
+  padding: 12px;
+  border-radius: 8px;
+  color: #166534;
+  margin: 16px 0;
+}
+
+.fp-back {
+  margin-top: 16px;
+  background: none;
+  border: none;
+  color: #111827;
+  cursor: pointer;
+}
