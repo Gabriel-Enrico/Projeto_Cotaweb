@@ -186,6 +186,7 @@ export default function AdminPage({ onLogout }) {
   const [modalRestaurante, setModalRestaurante] = useState(null)
   const [usuariosModal, setUsuariosModal] = useState(null)
   const [modalNovoUsuario, setModalNovoUsuario] = useState(null)
+  const [modalRedefinirSenha, setModalRedefinirSenha] = useState(null)
   const [toast, setToast] = useState(null)
 
   const showToast = useCallback((msg, tipo = 'ok') => {
@@ -272,6 +273,16 @@ export default function AdminPage({ onLogout }) {
       await api.admin.usuarios.atualizar(usuario.id, { ativo: !usuario.ativo })
       showToast(`Usuário ${!usuario.ativo ? 'ativado' : 'desativado'}!`)
       carregarDados()
+    } catch (e) {
+      showToast('Erro: ' + e.message, 'erro')
+    }
+  }
+
+  async function salvarNovaSenha({ id, senha }) {
+    try {
+      await api.admin.usuarios.redefinirSenha(id, senha)
+      showToast('Senha redefinida com sucesso!')
+      setModalRedefinirSenha(null)
     } catch (e) {
       showToast('Erro: ' + e.message, 'erro')
     }
@@ -658,13 +669,22 @@ export default function AdminPage({ onLogout }) {
                           }}>{u.ativo ? 'ATIVO' : 'INATIVO'}</span>
                         </td>
                         <td style={{ padding: '12px 16px' }}>
-                          <ActionBtn
-                            onClick={() => toggleUsuario(u)}
-                            color={u.ativo ? 'var(--red)' : 'var(--green)'}
-                            bgColor={u.ativo ? 'var(--red-bg)' : 'var(--green-bg)'}
-                          >
-                            {u.ativo ? <><IconToggleOff /> Desativar</> : <><IconToggleOn /> Ativar</>}
-                          </ActionBtn>
+                          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                            <ActionBtn
+                              onClick={() => toggleUsuario(u)}
+                              color={u.ativo ? 'var(--red)' : 'var(--green)'}
+                              bgColor={u.ativo ? 'var(--red-bg)' : 'var(--green-bg)'}
+                            >
+                              {u.ativo ? <><IconToggleOff /> Desativar</> : <><IconToggleOn /> Ativar</>}
+                            </ActionBtn>
+                            <ActionBtn
+                              onClick={() => setModalRedefinirSenha(u)}
+                              color="var(--blue)"
+                              bgColor="var(--blue-bg)"
+                            >
+                              {Icons.edit} Senha
+                            </ActionBtn>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -745,10 +765,18 @@ export default function AdminPage({ onLogout }) {
       {/* Modal: Novo Usuário */}
       {modalNovoUsuario !== null && (
         <NovoUsuarioModal
-          restaurantes={restaurantes}
-          preSelected={modalNovoUsuario}
-          onSalvar={salvarNovoUsuario}
-          onFechar={() => setModalNovoUsuario(null)}
+           restaurantes={restaurantes}
+           preSelected={modalNovoUsuario}
+           onSalvar={salvarNovoUsuario}
+           onFechar={() => setModalNovoUsuario(null)}
+        />
+      )}
+
+      {modalRedefinirSenha !== null && (
+        <RedefinirSenhaModal
+          usuario={modalRedefinirSenha}
+          onSalvar={salvarNovaSenha}
+          onFechar={() => setModalRedefinirSenha(null)}
         />
       )}
     </div>
@@ -911,4 +939,42 @@ const modalBoxStyle = {
   borderRadius: 16, padding: '28px 24px', width: '100%', maxWidth: 480,
   maxHeight: '90vh', overflowY: 'auto',
   boxShadow: '0 20px 40px rgba(0,0,0,.15)',
+}
+
+function RedefinirSenhaModal({ usuario, onSalvar, onFechar }) {
+  const [senha, setSenha] = useState('')
+  const [salvando, setSalvando] = useState(false)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setSalvando(true)
+    try {
+      await onSalvar({ id: usuario.id, senha })
+    } finally {
+      setSalvando(false)
+    }
+  }
+
+  return (
+    <div style={{ ...overlayStyle, zIndex: 110 }} onClick={onFechar}>
+      <form style={{ ...modalBoxStyle, maxWidth: 360 }} onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
+        <h3 style={{ margin: '0 0 8px', fontWeight: 700, fontSize: 16 }}>Redefinir Senha</h3>
+        <p style={{ margin: '0 0 20px', fontSize: 12, color: 'var(--muted)', lineHeight: 1.4 }}>
+          Digite uma nova senha para o acesso de <strong>{usuario.nome}</strong> ({usuario.email}).
+        </p>
+
+        <div className="field">
+          <label>Nova Senha *</label>
+          <input required minLength={6} type="password" value={senha} onChange={e => setSenha(e.target.value)} />
+        </div>
+
+        <div className="modal-actions" style={{ marginTop: 24 }}>
+          <button type="button" onClick={onFechar} className="btn-nao">Cancelar</button>
+          <button type="submit" disabled={salvando} className="btn-sim" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {salvando ? 'Salvando...' : 'Salvar Nova Senha'}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
 }

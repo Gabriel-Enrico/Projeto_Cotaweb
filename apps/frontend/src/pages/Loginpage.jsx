@@ -1,7 +1,11 @@
+import { useState } from 'react'
 import { useLoginForm } from '../hooks/useLoginForm'
+import EsqueciSenhaPage from './EsqueciSenhaPage'
 import '../styles/LoginPage.css'
 
 export default function LoginPage({ onLogin }) {
+  const [tela, setTela] = useState('login') // 'login' | 'esqueci'
+
   const {
     form,
     erro,
@@ -10,6 +14,10 @@ export default function LoginPage({ onLogin }) {
     setField,
     handleLogin,
   } = useLoginForm(onLogin)
+
+  if (tela === 'esqueci') {
+    return <EsqueciSenhaPage onVoltar={() => setTela('login')} />
+  }
 
   return (
     <div className="login-overlay">
@@ -61,6 +69,15 @@ export default function LoginPage({ onLogin }) {
             }
           </button>
         </form>
+
+        <button
+          type="button"
+          className="login-link"
+          onClick={() => setTela('esqueci')}
+        >
+          Esqueci minha senha
+        </button>
+
       </div>
     </div>
   )
