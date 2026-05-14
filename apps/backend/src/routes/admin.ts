@@ -227,6 +227,29 @@ export async function adminRoutes(app: FastifyInstance) {
     return reply.send(atualizado);
   });
 
+  const redefinirSenhaSchema = z.object({
+    senha: z.string().min(6),
+  });
+
+  // PUT /admin/usuarios/:id/senha — redefinição manual de senha pelo admin
+  app.put<{ Params: { id: string } }>("/admin/usuarios/:id/senha", async (req, reply) => {
+    const params = validate(idParam, req.params, reply);
+    if (!params) return;
+    const body = validate(redefinirSenhaSchema, req.body, reply);
+    if (!body) return;
+
+    const existente = await db("usuarios").where({ id: params.id }).first();
+    if (!existente) return reply.status(404).send({ error: "Usuário não encontrado" });
+
+    const senha_hash = await bcrypt.hash(body.senha, 12);
+
+    await db("usuarios")
+      .where({ id: params.id })
+      .update({ senha_hash, updated_at: new Date() });
+
+    return reply.status(204).send();
+  });
+
   // GET /admin/stats — números gerais do painel
   app.get("/admin/stats", async (_req, reply) => {
     const [totalRestaurantes] = await db("restaurantes").count("id as count");

@@ -9,7 +9,7 @@ async function req(endpoint, options = {}, retry = true) {
  
   const res = await fetch(`${BASE}${endpoint}`, {
     ...options,
-    credentials: 'include', // envia cookie httpOnly do refreshToken
+    credentials: 'include',
     headers: { ...headers, ...(options.headers || {}) },
   })
  
@@ -19,9 +19,8 @@ async function req(endpoint, options = {}, retry = true) {
   if (res.status === 401 && retry) {
     const refreshed = await auth.refresh()
     if (refreshed) {
-      return req(endpoint, options, false) // repete a chamada original
+      return req(endpoint, options, false)
     }
-    // Refresh falhou — desloga
     localStorage.removeItem('accessToken')
     window.dispatchEvent(new Event('auth:logout'))
     throw new Error('Sessão expirada. Faça login novamente.')
@@ -33,7 +32,7 @@ async function req(endpoint, options = {}, retry = true) {
 }
 
 export const auth = {
-  registrar: (body) => 
+  registrar: (body) =>
     req('/auth/registrar', {
       method: 'POST',
       body: JSON.stringify(body)
@@ -72,13 +71,23 @@ export const auth = {
 
   logout: async () => {
     await fetch(`${BASE}/auth/logout`, {
-      method: 'POST', 
+      method: 'POST',
       credentials: 'include'
     })
     localStorage.removeItem('accessToken')
   },
 
   me: () => req('/auth/me'),
+
+  /**
+   * Solicita recuperação de senha.
+   * O backend notifica o administrador por e-mail.
+   */
+  recuperarSenha: (email) =>
+    req('/auth/recuperar-senha', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    }),
 }
 
 export const restaurantes = {
@@ -144,6 +153,7 @@ export const admin = {
     listar: () => req('/admin/usuarios'),
     criar: (body) => req('/admin/usuarios', { method: 'POST', body: JSON.stringify(body) }),
     atualizar: (id, body) => req(`/admin/usuarios/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+    redefinirSenha: (id, senha) => req(`/admin/usuarios/${id}/senha`, { method: 'PUT', body: JSON.stringify({ senha }) }),
   },
 }
 
